@@ -5,6 +5,7 @@ pipeline {
         stage('Run Security Tests') {
             steps {
                 echo 'Running security tests...'
+
             }
         }
 
@@ -12,7 +13,7 @@ pipeline {
             steps {
                 echo 'Creating an image...'
                 script {
-                    docker.build('mennahaggag/flask-docker:1.0')
+                    def customImage = docker.build('mennahaggag/flask-docker:1.0')
                 }
             }
         }
@@ -20,7 +21,11 @@ pipeline {
         stage('Run Security Scans on Docker Image') {
             steps {
                 echo 'Running security scans on the Docker image...'
-                sh 'trivy image mennahaggag/flask-docker:1.0'
+                script {
+                    docker.image('ghcr.io/aquasecurity/trivy:latest').inside {
+                        sh 'trivy image mennahaggag/flask-docker:1.0'
+                    }
+                }
             }
         }
 
@@ -29,7 +34,8 @@ pipeline {
                 echo 'Uploading Docker image to Docker Hub...'
                 script {
                     docker.withRegistry('', 'dockerhub-credentials') {
-                        docker.image('mennahaggag/flask-docker:1.0').push()
+                        def customImage = docker.image('mennahaggag/flask-docker:1.0')
+                        customImage.push()
                     }
                 }
             }
