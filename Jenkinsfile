@@ -12,9 +12,7 @@ pipeline {
         stage('Create an Image') {
             steps {
                 echo 'Creating an image...'
-                script {
-                    def customImage = docker.build('mennahaggag/flask-docker:1.0')
-                }
+                sh 'sudo docker build -t mennahaggag/flask-docker:1.0 .'
             }
         }
 
@@ -23,7 +21,7 @@ pipeline {
                 echo 'Running security scans on the Docker image...'
                 script {
                     docker.image('ghcr.io/aquasecurity/trivy:latest').inside {
-                        sh 'trivy image mennahaggag/flask-docker:1.0'
+                        sh 'sudo trivy image mennahaggag/flask-docker:1.0'
                     }
                 }
             }
