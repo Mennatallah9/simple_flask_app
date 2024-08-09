@@ -5,7 +5,6 @@ pipeline {
         stage('Run Security Tests') {
             steps {
                 echo 'Running security tests...'
-
             }
         }
 
@@ -20,13 +19,8 @@ pipeline {
             steps {
                 echo 'Running security scans on the Docker image...'
                 script {
-                    // Run Trivy to scan the Docker image
                     def trivyOutput = sh(script: "trivy image mennaashraf/flask-docker:1.0", returnStdout: true).trim()
-
-                    // Display Trivy scan results
                     println trivyOutput
-
-                    // Check if vulnerabilities were found
                     if (trivyOutput.contains("Total: 0")) {
                         echo "No vulnerabilities found in the Docker image."
                     } else {
@@ -40,8 +34,10 @@ pipeline {
             steps {
                 echo 'Uploading Docker image to Docker Hub...'
                 script {
+                    echo "Preparing to push Docker image..."
+                    sh 'docker images'
                     docker.withRegistry("https://index.docker.io/v1/", 'git') {
-                        docker.image('mennaashraf/flask-docker:1.0').push()
+                        docker.image('mennaashraf/flask-docker:1.0').push('latest')
                     }
                 }
             }
