@@ -32,12 +32,10 @@ pipeline {
 
         stage('Upload Docker Image to Docker Hub') {
             steps {
-                echo 'Uploading Docker image to Docker Hub...'
                 script {
-                    echo "Preparing to push Docker image..."
-                    sh 'docker images'
-                    docker.withRegistry("https://index.docker.io/v1/", 'dockerhub') {
-                        docker.image('mennaashraf/flask-docker:1.0').push('latest')
+                    echo 'Pushing Docker image to Docker Hub...'
+                    withDockerRegistry(credentialsId: "dockerhub") {
+                        sh "docker push 'mennaashraf/flask-docker:1.0'"
                     }
                 }
             }
