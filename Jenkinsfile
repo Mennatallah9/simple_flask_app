@@ -20,8 +20,17 @@ pipeline {
             steps {
                 echo 'Running security scans on the Docker image...'
                 script {
-                    docker.image('ghcr.io/aquasecurity/trivy:latest').inside {
-                        sh 'trivy image mennahaggag/flask-docker:1.0'
+                    // Run Trivy to scan the Docker image
+                    def trivyOutput = sh(script: "trivy image mennahaggag/flask-docker:1.0", returnStdout: true).trim()
+
+                    // Display Trivy scan results
+                    println trivyOutput
+
+                    // Check if vulnerabilities were found
+                    if (trivyOutput.contains("Total: 0")) {
+                        echo "No vulnerabilities found in the Docker image."
+                    } else {
+                        echo "Vulnerabilities found in the Docker image."
                     }
                 }
             }
