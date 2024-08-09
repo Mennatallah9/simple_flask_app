@@ -40,10 +40,7 @@ pipeline {
             steps {
                 echo 'Uploading Docker image to Docker Hub...'
                 script {
-                    docker.withRegistry('', 'dockerhub-credentials') {
-                        def customImage = docker.image('mennahaggag/flask-docker:1.0')
-                        customImage.push()
-                    }
+                    sh "docker push mennahaggag/flask-docker:1.0"
                 }
             }
         }
