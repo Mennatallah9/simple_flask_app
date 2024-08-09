@@ -40,8 +40,8 @@ pipeline {
             steps {
                 echo 'Uploading Docker image to Docker Hub...'
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'git') {
-                        docker.image('mennaashraf/flask-docker:1.0').push('latest')
+                    docker.withRegistry("https://index.docker.io/v1/", 'git') {
+                        docker.image('mennaashraf/flask-docker:1.0').push()
                     }
                 }
             }
