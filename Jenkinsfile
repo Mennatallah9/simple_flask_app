@@ -12,7 +12,7 @@ pipeline {
         stage('Create an Image') {
             steps {
                 echo 'Creating an image...'
-                sh 'docker build -t mennahaggag/flask-docker:1.0 .'
+                sh 'docker build -t mennaashraf/flask-docker:1.0 .'
             }
         }
 
@@ -21,7 +21,7 @@ pipeline {
                 echo 'Running security scans on the Docker image...'
                 script {
                     // Run Trivy to scan the Docker image
-                    def trivyOutput = sh(script: "trivy image mennahaggag/flask-docker:1.0", returnStdout: true).trim()
+                    def trivyOutput = sh(script: "trivy image mennaashraf/flask-docker:1.0", returnStdout: true).trim()
 
                     // Display Trivy scan results
                     println trivyOutput
@@ -40,7 +40,9 @@ pipeline {
             steps {
                 echo 'Uploading Docker image to Docker Hub...'
                 script {
-                    sh "docker push mennahaggag/flask-docker:1.0"
+                    docker.withRegistry('https://index.docker.io/v1/', 'git') {
+                        docker.image('mennaashraf/flask-docker:1.0').push('latest')
+                    }
                 }
             }
         }
