@@ -36,7 +36,7 @@ pipeline {
                 script {
                     echo "Preparing to push Docker image..."
                     sh 'docker images'
-                    docker.withRegistry("https://index.docker.io/v1/", 'git') {
+                    docker.withRegistry("https://index.docker.io/v1/", 'dockerhub') {
                         docker.image('mennaashraf/flask-docker:1.0').push('latest')
                     }
                 }
