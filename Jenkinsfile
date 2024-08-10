@@ -40,5 +40,16 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Server') {
+            steps {
+                sshagent(['ssh']) {
+                    sh '''
+                        scp -r ./app mennatallah@10.0.2.15:/var/www/my-flask-app
+                        ssh mennatallah@10.0.2.15 'cd /var/www/my-flask-app && ./deploy-script.sh'
+                    '''
+                }
+            }
+        }
+
     }
 }
